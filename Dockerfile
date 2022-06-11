@@ -37,6 +37,13 @@ ENV GOROOT=/usr/local/go \
 ENV PATH=${GOPATH}/bin:${GOROOT}/bin:${PATH}
 RUN apt-get update && bash /tmp/library-scripts/go-debian.sh "latest" "${GOROOT}" "${GOPATH}" && apt-get clean -y
 
+ARG PYTHON_PATH=/usr/local/python
+ENV PIPX_HOME=/usr/local/py-utils \
+    PIPX_BIN_DIR=/usr/local/py-utils/bin
+ENV PATH=${PYTHON_PATH}/bin:${PATH}:${PIPX_BIN_DIR}
+COPY library-scripts/python-debian.sh /tmp/library-scripts/
+RUN apt-get update && bash /tmp/library-scripts/python-debian.sh "3.9" "${PYTHON_PATH}" "${PIPX_HOME}"
+
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
     netcat \
@@ -57,7 +64,6 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     bash-completion \
     lsb-release \
     ca-certificates \
-    python3-pip \
     iputils-ping \
     && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts/
 
