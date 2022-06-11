@@ -5,7 +5,6 @@
 # vimrc
 # historysync
 
-# TERRAFORM_VERSION="1.1.8"
 SHELLCHECK_VERSION="v0.8.0"
 GOSSM_VERSION="1.4.6"
 SHFMT_VERSION="3.4.3"
@@ -22,15 +21,6 @@ function install_shellcheck {
     sudo rm -rf /tmp/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz /tmp/shellcheck-${SHELLCHECK_VERSION}
 }
 
-# function install_terraform {
-
-#     curl -sL \
-#         "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" \
-#         -o /tmp/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-#     sudo unzip -q /tmp/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin/
-#     sudo chmod +x /usr/local/bin/terraform
-#     # terraform -install-autocomplete # already in bashrc
-# }
 
 function install_aws_cli {
     curl -sL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
@@ -78,24 +68,11 @@ function install_shfmt {
     sudo chmod +x /usr/local/bin/shfmt
 }
 
-function redis_tunnel {
-    aws ssm start-session \
-        --target i-0e9bc8a88a6df5535 \
-        --document-name AWS-StartPortForwardingSession \
-        --parameters '{"portNumber":["6379"], "localPortNumber":["6379"]}'
-}
-
-install_shfmt &
-install_aws_cli &
-install_shellcheck &
-# install_terraform &
-install_aws_sam &
-install_gossm &
-install_trivy &
-pip install cfn-lint &
-install_session_manager &
-
-echo "Running apt-get update"
-sudo apt-get update &>/dev/null
-
-wait < <(jobs -p)
+install_shfmt
+install_aws_cli
+install_shellcheck
+install_aws_sam
+install_gossm
+install_trivy
+pip install cfn-lint
+install_session_manager
