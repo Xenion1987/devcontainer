@@ -22,7 +22,6 @@ function install_shellcheck {
     sudo rm -rf /tmp/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz /tmp/shellcheck-${SHELLCHECK_VERSION}
 }
 
-
 function install_aws_cli {
     curl -sL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
     unzip -q /tmp/awscliv2.zip -d /tmp/awscliv2
@@ -88,3 +87,7 @@ install_gossm
 install_trivy
 pip install cfn-lint
 install_session_manager
+
+apt-get autoremove -y
+apt-get clean -y
+rm -rf /var/lib/apt/lists/* /tmp/library-scripts/

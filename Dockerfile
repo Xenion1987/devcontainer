@@ -33,7 +33,7 @@ RUN apt-get update \
     && apt-get autoremove -y && apt-get clean -y
 
 ENV GOROOT=/usr/local/go \
-  GOPATH=/go
+    GOPATH=/go
 ENV PATH=${GOPATH}/bin:${GOROOT}/bin:${PATH}
 RUN apt-get update && bash /tmp/library-scripts/go-debian.sh "latest" "${GOROOT}" "${GOPATH}" && apt-get clean -y
 
@@ -43,9 +43,6 @@ ENV PIPX_HOME=/usr/local/py-utils \
 ENV PATH=${PYTHON_PATH}/bin:${PATH}:${PIPX_BIN_DIR}
 COPY library-scripts/python-debian.sh /tmp/library-scripts/
 RUN apt-get update && bash /tmp/library-scripts/python-debian.sh "3.9" "${PYTHON_PATH}" "${PIPX_HOME}"
-
-# COPY library-scripts/terraform-debian.sh /tmp/library-scripts/
-# RUN apt-get update && bash /tmp/library-scripts/terraform-debian.sh
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
@@ -70,8 +67,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     iputils-ping \
     && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts/
 
-COPY pre-setup.sh /tmp/
-RUN /bin/bash /tmp/pre-setup.sh
+COPY setup.sh /tmp/
+RUN /bin/bash /tmp/setup.sh
 
 
 VOLUME [ "/var/lib/docker" ]
