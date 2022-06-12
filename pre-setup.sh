@@ -80,6 +80,7 @@ function install_terraform {
 }
 
 install_shfmt
+install_terraform
 install_aws_cli
 install_shellcheck
 install_aws_sam
