@@ -44,8 +44,8 @@ ENV PATH=${PYTHON_PATH}/bin:${PATH}:${PIPX_BIN_DIR}
 COPY library-scripts/python-debian.sh /tmp/library-scripts/
 RUN apt-get update && bash /tmp/library-scripts/python-debian.sh "3.9" "${PYTHON_PATH}" "${PIPX_HOME}"
 
-COPY library-scripts/terraform-debian.sh /tmp/library-scripts/
-RUN apt-get update && bash /tmp/library-scripts/terraform-debian.sh
+# COPY library-scripts/terraform-debian.sh /tmp/library-scripts/
+# RUN apt-get update && bash /tmp/library-scripts/terraform-debian.sh
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \

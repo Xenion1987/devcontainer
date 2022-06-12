@@ -9,6 +9,7 @@ SHELLCHECK_VERSION="v0.8.0"
 GOSSM_VERSION="1.4.6"
 SHFMT_VERSION="3.4.3"
 TRIVY_VERSION="0.27.1"
+TERRAFORM_VERSION="1.2.2"
 
 function install_shellcheck {
 
@@ -66,6 +67,16 @@ function install_shfmt {
         "https://github.com/mvdan/sh/releases/download/v${SHFMT_VERSION}/shfmt_v${SHFMT_VERSION}_linux_amd64" \
         -o /usr/local/bin/shfmt
     sudo chmod +x /usr/local/bin/shfmt
+}
+
+function install_terraform {
+
+    curl -sL \
+        "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" \
+        -o /tmp/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+    sudo unzip -q /tmp/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin/
+    sudo chmod +x /usr/local/bin/terraform
+    # terraform -install-autocomplete # already in bashrc
 }
 
 install_shfmt
