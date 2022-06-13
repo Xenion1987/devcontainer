@@ -82,7 +82,7 @@ function install_terraform {
 function install_ghcli {
     sudo curl -sL https://github.com/cli/cli/releases/download/v${GHCLI_VERSION}/gh_${GHCLI_VERSION}_linux_amd64.deb \
         -o /tmp/gh_${GHCLI_VERSION}_linux_amd64.deb
-
+    dpkg -i /tmp/gh_${GHCLI_VERSION}_linux_amd64.deb
 }
 
 install_shfmt
