@@ -10,6 +10,7 @@ GOSSM_VERSION="1.4.6"
 SHFMT_VERSION="3.4.3"
 TRIVY_VERSION="0.27.1"
 TERRAFORM_VERSION="1.2.2"
+GHCLI_VERSION="2.12.1"
 
 function install_shellcheck {
 
@@ -19,7 +20,7 @@ function install_shellcheck {
     tar -xf /tmp/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz -C /tmp/
     sudo cp /tmp/shellcheck-${SHELLCHECK_VERSION}/shellcheck /usr/local/bin/
     sudo chmod +x /usr/local/bin/shellcheck
-    sudo rm -rf /tmp/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz /tmp/shellcheck-${SHELLCHECK_VERSION}
+    #sudo rm -rf /tmp/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz /tmp/shellcheck-${SHELLCHECK_VERSION}
 }
 
 function install_aws_cli {
@@ -50,7 +51,7 @@ function install_gossm {
     tar -xf /tmp/gossm_${GOSSM_VERSION}_Linux_x86_64.tar.gz -C /tmp/
     sudo mv /tmp/gossm /usr/local/bin/
     sudo chmod +x /usr/local/bin/gossm
-    sudo rm -rf /tmp/tmp/gossm_${GOSSM_VERSION}_Linux_x86_64.tar.gz
+    #sudo rm -rf /tmp/tmp/gossm_${GOSSM_VERSION}_Linux_x86_64.tar.gz
 }
 
 function install_trivy {
@@ -78,6 +79,12 @@ function install_terraform {
     # terraform -install-autocomplete # already in bashrc
 }
 
+function install_ghcli {
+    sudo curl -sL https://github.com/cli/cli/releases/download/v${GHCLI_VERSION}/gh_${GHCLI_VERSION}_linux_amd64.deb \
+        -o /tmp/gh_${GHCLI_VERSION}_linux_amd64.deb
+
+}
+
 install_shfmt
 install_terraform
 install_aws_cli
@@ -85,9 +92,12 @@ install_shellcheck
 install_aws_sam
 install_gossm
 install_trivy
-pip install cfn-lint
+install_ghcli
 install_session_manager
+pip install cfn-lint
 
+
+rm -rf /tmp/*
 apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/* /tmp/library-scripts/
