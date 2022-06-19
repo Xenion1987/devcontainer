@@ -12,6 +12,34 @@ TRIVY_VERSION="0.27.1"
 TERRAFORM_VERSION="1.2.2"
 GHCLI_VERSION="2.12.1"
 
+export DEBIAN_FRONTEND=noninteractive
+
+function install_packages {
+
+    apt-get update
+    apt-get -y install --no-install-recommends \
+        netcat \
+        vim \
+        htop \
+        zip unzip \
+        git \
+        curl \
+        wget \
+        jq \
+        jo \
+        xz-utils \
+        file \
+        gnupg \
+        pwgen \
+        software-properties-common \
+        redis-tools \
+        dos2unix \
+        bash-completion \
+        lsb-release \
+        ca-certificates \
+        iputils-ping
+}
+
 function install_shellcheck {
 
     curl -sL \
@@ -85,6 +113,7 @@ function install_ghcli {
     dpkg -i /tmp/gh_${GHCLI_VERSION}_linux_amd64.deb
 }
 
+install_packages
 install_shfmt
 install_terraform
 install_aws_cli
@@ -95,7 +124,6 @@ install_trivy
 install_ghcli
 install_session_manager
 pip install cfn-lint
-
 
 rm -rf /tmp/*
 apt-get autoremove -y
