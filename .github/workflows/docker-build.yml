@@ -63,8 +63,8 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          #platforms: linux/amd64, linux/arm/v7, linux/arm64, linux/arm/v6
-          platforms: linux/amd64
+          platforms: linux/amd64, linux/arm/v7, linux/arm64, linux/arm/v6
+          #platforms: linux/amd64
           tags: ${{ steps.meta-push.outputs.tags }}
           labels: ${{ steps.meta-push.outputs.labels }}
 
@@ -74,7 +74,7 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          #platforms: linux/amd64, linux/arm/v7, linux/arm64, linux/arm/v6
-          platforms: linux/amd64
+          platforms: linux/amd64, linux/arm/v7, linux/arm64, linux/arm/v6
+          #platforms: linux/amd64
           tags: ${{ steps.meta-release.outputs.tags }}
           labels: ${{ steps.meta-release.outputs.labels }}
