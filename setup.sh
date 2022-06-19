@@ -37,7 +37,8 @@ function install_packages {
         bash-completion \
         lsb-release \
         ca-certificates \
-        iputils-ping
+        iputils-ping \
+        python3-distutils
 }
 
 function install_shellcheck {
