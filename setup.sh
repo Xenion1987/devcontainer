@@ -114,6 +114,10 @@ function install_ghcli {
     dpkg -i /tmp/gh_${GHCLI_VERSION}_linux_amd64.deb
 }
 
+function install_bashhub {
+    curl -OL https://bashhub.com/setup && bash setup
+}
+
 install_packages
 install_shfmt
 install_terraform
@@ -124,6 +128,7 @@ install_gossm
 install_trivy
 install_ghcli
 install_session_manager
+install_bashhub
 pip install cfn-lint
 
 rm -rf /tmp/*
