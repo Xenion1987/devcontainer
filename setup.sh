@@ -128,7 +128,7 @@ install_gossm
 install_trivy
 install_ghcli
 install_session_manager
-install_bashhub
+#install_bashhub
 pip install cfn-lint
 
 rm -rf /tmp/*
