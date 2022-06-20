@@ -114,9 +114,9 @@ function install_ghcli {
     dpkg -i /tmp/gh_${GHCLI_VERSION}_linux_amd64.deb
 }
 
-function install_bashhub {
-    curl -OL https://bashhub.com/setup && bash setup
-}
+# function install_bashhub {
+#     curl -OL https://raw.githubusercontent.com/yggdrion/bashhub-client/main/install-bashhub.sh && bash install-bashhub.sh non-interactive
+# }
 
 install_packages
 install_shfmt
