@@ -5,12 +5,16 @@
 # vimrc
 # historysync
 
-SHELLCHECK_VERSION="v0.8.0"
-GOSSM_VERSION="1.4.6"
-SHFMT_VERSION="3.4.3"
+# If you want to use a specific version, set the version number here.
+# Otherwise, set the variable to 'latest'
+SHELLCHECK_VERSION="latest"
+AWS_CLI_VERSION="latest"
+AWS_SAM_CLI_VERSION="latest"
+GOSSM_VERSION="latest"
+SHFMT_VERSION="latest"
 TRIVY_VERSION="0.27.1"
 TERRAFORM_VERSION="1.2.2"
-GHCLI_VERSION="2.12.1"
+GHCLI_VERSION="latest"
 
 export DEBIAN_FRONTEND=noninteractive
 
@@ -41,28 +45,52 @@ function install_packages {
         python3-distutils
 }
 
-function install_shellcheck {
+function get_latest_github_release_version() {
+    curl -s "https://api.github.com/repos/${GH_ORG}/${GH_REPO}/releases/latest" | jq -r '.tag_name'
+}
 
+function install_shellcheck {
+    GH_ORG="koalaman"
+    GH_REPO="shellcheck"
+    if [[ "${SHELLCHECK_VERSION}" = "latest" ]]; then
+        SHELLCHECK_VERSION="$(get_latest_github_release_version)"
+    fi
+    DOWNLOAD_FILENAME="shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz"
     curl -sL \
-        "https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK_VERSION}/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz" \
-        -o /tmp/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz
-    tar -xf /tmp/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz -C /tmp/
-    sudo cp /tmp/shellcheck-${SHELLCHECK_VERSION}/shellcheck /usr/local/bin/
-    sudo chmod +x /usr/local/bin/shellcheck
-    #sudo rm -rf /tmp/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz /tmp/shellcheck-${SHELLCHECK_VERSION}
+        "https://github.com/${GH_ORG}/${GH_REPO}/releases/download/${SHELLCHECK_VERSION}/${DOWNLOAD_FILENAME}" \
+        -o "/tmp/${DOWNLOAD_FILENAME}"
+    tar -xf "/tmp/${DOWNLOAD_FILENAME}" -C "/tmp/"
+    sudo cp "/tmp/shellcheck-${SHELLCHECK_VERSION}/shellcheck" "/usr/local/bin/"
+    sudo chmod +x "/usr/local/bin/shellcheck"
 }
 
 function install_aws_cli {
-    curl -sL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
-    unzip -q /tmp/awscliv2.zip -d /tmp/awscliv2
+    GH_ORG="aws"
+    GH_REPO="aws-cli"
+    if [[ "${AWS_CLI_VERSION}" = "latest" ]]; then
+        AWS_CLI_VERSION=$(curl -s https://api.github.com/repos/aws/aws-cli/tags | jq -r '.[].name' | sort -V | tail -n1)
+    fi
+    DOWNLOAD_FILENAME="awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip"
+
+    curl -sL \
+        "https://awscli.amazonaws.com/${DOWNLOAD_FILENAME}" \
+        -o "/tmp/awscliv2.zip"
+    unzip -q "/tmp/awscliv2.zip" -d "/tmp/awscliv2"
     sudo /tmp/awscliv2/aws/install
 }
 
 function install_aws_sam {
+    GH_ORG="aws"
+    GH_REPO="aws-sam-cli"
+    if [[ "${AWS_SAM_CLI_VERSION}" = "latest" ]]; then
+        AWS_SAM_CLI_VERSION="$(get_latest_github_release_version)"
+    fi
+    DOWNLOAD_FILENAME="aws-sam-cli-linux-x86_64.zip"
+
     curl -sL \
-        https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip \
-        -o /tmp/aws-sam-cli-linux-x86_64.zip
-    unzip -q /tmp/aws-sam-cli-linux-x86_64.zip -d /tmp/sam-installation
+        "https://github.com/${GH_ORG}/${GH_REPO}/releases/download/${AWS_SAM_CLI_VERSION}/${DOWNLOAD_FILENAME}" \
+        -o "/tmp/${DOWNLOAD_FILENAME}"
+    unzip -q "/tmp/${DOWNLOAD_FILENAME}" -d "/tmp/sam-installation"
     sudo /tmp/sam-installation/install
 }
 
@@ -73,14 +101,18 @@ function install_session_manager {
 }
 
 function install_gossm {
-
+    GH_ORG="gjbae1212"
+    GH_REPO="gossm"
+    if [[ "${GOSSM_VERSION}" = "latest" ]]; then
+        GOSSM_VERSION="$(get_latest_github_release_version)"
+    fi
+    DOWNLOAD_FILENAME="gossm_${GOSSM_VERSION}_Linux_x86_64.tar.gz"
     curl -sL \
-        "https://github.com/gjbae1212/gossm/releases/download/v${GOSSM_VERSION}/gossm_${GOSSM_VERSION}_Linux_x86_64.tar.gz" \
-        -o /tmp/gossm_${GOSSM_VERSION}_Linux_x86_64.tar.gz
-    tar -xf /tmp/gossm_${GOSSM_VERSION}_Linux_x86_64.tar.gz -C /tmp/
-    sudo mv /tmp/gossm /usr/local/bin/
-    sudo chmod +x /usr/local/bin/gossm
-    #sudo rm -rf /tmp/tmp/gossm_${GOSSM_VERSION}_Linux_x86_64.tar.gz
+        "https://github.com/${GH_ORG}/${GH_REPO}/releases/download/v${GOSSM_VERSION}/${DOWNLOAD_FILENAME}" \
+        -o "/tmp/${DOWNLOAD_FILENAME}"
+    tar -xf "/tmp/${DOWNLOAD_FILENAME}" -C /tmp/
+    sudo mv "/tmp/gossm" "/usr/local/bin/"
+    sudo chmod +x "/usr/local/bin/gossm"
 }
 
 function install_trivy {
@@ -91,27 +123,46 @@ function install_trivy {
 }
 
 function install_shfmt {
-
+    GH_ORG="mvdan"
+    GH_REPO="sh"
+    if [[ "${SHFMT_VERSION}" = "latest" ]]; then
+        SHFMT_VERSION="$(get_latest_github_release_version)"
+    fi
+    DOWNLOAD_FILENAME="shfmt_v${SHFMT_VERSION}_linux_amd64"
     sudo curl -sL \
-        "https://github.com/mvdan/sh/releases/download/v${SHFMT_VERSION}/shfmt_v${SHFMT_VERSION}_linux_amd64" \
-        -o /usr/local/bin/shfmt
-    sudo chmod +x /usr/local/bin/shfmt
+        "https://github.com/${GH_ORG}/${GH_REPO}/releases/download/v${GOSSM_VERSION}/${DOWNLOAD_FILENAME}" \
+        -o "/usr/local/bin/shfmt"
+    sudo chmod +x "/usr/local/bin/shfmt"
 }
 
 function install_terraform {
+    GH_ORG="hashicorp"
+    GH_REPO="terraform"
+    if [[ "${TERRAFORM_VERSION}" = "latest" ]]; then
+        TERRAFORM_VERSION="$(get_latest_github_release_version)"
+    fi
+    DOWNLOAD_FILENAME="terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
 
     curl -sL \
-        "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" \
-        -o /tmp/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-    sudo unzip -q /tmp/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin/
-    sudo chmod +x /usr/local/bin/terraform
+        "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/${DOWNLOAD_FILENAME}" \
+        -o "/tmp/${DOWNLOAD_FILENAME}"
+    sudo unzip -q "/tmp/${DOWNLOAD_FILENAME}" -d "/usr/local/bin/"
+    sudo chmod +x "/usr/local/bin/terraform"
     # terraform -install-autocomplete # already in bashrc
 }
 
 function install_ghcli {
-    sudo curl -sL https://github.com/cli/cli/releases/download/v${GHCLI_VERSION}/gh_${GHCLI_VERSION}_linux_amd64.deb \
-        -o /tmp/gh_${GHCLI_VERSION}_linux_amd64.deb
-    dpkg -i /tmp/gh_${GHCLI_VERSION}_linux_amd64.deb
+    GH_ORG="cli"
+    GH_REPO="cli"
+    if [[ "${GHCLI_VERSION}" = "latest" ]]; then
+        GHCLI_VERSION="$(get_latest_github_release_version)"
+    fi
+    DOWNLOAD_FILENAME="gh_${GHCLI_VERSION}_linux_amd64.deb"
+
+    sudo curl -sL \
+        "https://github.com/${GH_ORG}/${GH_REPO}/releases/download/${GOSSM_VERSION}/${DOWNLOAD_FILENAME}" \
+        -o /tmp/gh_"${GHCLI_VERSION}"_linux_amd64.deb
+    dpkg -i /tmp/gh_"${GHCLI_VERSION}"_linux_amd64.deb
 }
 
 # function install_bashhub {
